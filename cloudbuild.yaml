@@ -1,0 +1,19 @@
+steps:
+
+- id: 'Run InSpec'
+  name: gcr.io/cloud-foundation-cicd/cft/developer-tools:0
+  entrypoint: '/bin/sh'
+  args: 
+    - '-c'
+    - |
+      inspec exec . -t gcp:// \
+      --input-file inputs.yml \
+      --reporter cli json:/workspace/inspec_report.json html:/workspace/inspec_report.html | tee out.json
+
+- id: 'Store json Report'
+  waitFor: ['Run InSpec']
+  name: gcr.io/cloud-builders/gsutil
+  args:
+    - cp
+    - /workspace/inspec_report.json
+    - gs://jtg-inspec-reports/pci_report-${BUILD_ID}.json
