@@ -1,0 +1,19 @@
+name: "Serverless GCP InSpec test"
+inputs:
+- name: gcp_project_id
+  required: true
+  description: 'The GCP project identifier.'
+  type: string
+- name: bucket_name
+  required: true
+  description: 'The GCS bucket name'
+  type: string
+- name: bucket_name_prefix
+  required: false
+  description: 'The GCS bucket name prefix'
+  type: string
+supports:
+  - platform: gcp
+depends:
+  - name: inspec-gcp
+    url: https://github.com/inspec/inspec-gcp/archive/master.tar.gz
