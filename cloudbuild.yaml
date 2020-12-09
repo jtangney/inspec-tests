@@ -1,14 +1,15 @@
 steps:
 
 - id: 'Run InSpec'
-  name: gcr.io/cloud-foundation-cicd/cft/developer-tools:0
-  entrypoint: '/bin/sh'
+  name: chef/inspec
   args: 
-    - '-c'
-    - |
-      inspec exec . -t gcp:// \
-      --input-file inputs.yml \
-      --reporter cli json:/workspace/inspec_report.json html:/workspace/inspec_report.html | tee out.json
+    - exec
+    - /workspace
+    - -t=gcp://
+    - --input-file=inputs.yaml
+    - --chef-license=accept
+    - --reporter=cli 
+    - json:/workspace/inspec_report.json
 
 - id: 'Store json Report'
   waitFor: ['Run InSpec']
@@ -16,4 +17,4 @@ steps:
   args:
     - cp
     - /workspace/inspec_report.json
-    - gs://jtg-inspec-reports/pci_report-${BUILD_ID}.json
+    - gs://jtg-inspec-reports/report-${BUILD_ID}.json
