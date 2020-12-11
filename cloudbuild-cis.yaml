@@ -1,4 +1,19 @@
 steps:
+  
+# Runs the CIS InSpec tests - but the build fails if any of the InSpec
+# tests fail... Which may not be desired behaviour.
+- id: 'run-inspec-cis'
+  name: gcr.io/${PROJECT_ID}/inspec-gcp-cis-benchmark:latest
+  args:
+    - exec
+    - /share/.
+    - -t=gcp://
+    - --input=gcp_project_id=${PROJECT_ID}
+    - --reporter=cli 
+    - json:/workspace/report.json
+
+# Runs the CIS InSpec tests, but via shell.
+# This way, can redirect any InSpec erros and continue with other build steps
 # - id: 'run-inspec-cis'
 #   name: gcr.io/${PROJECT_ID}/inspec-gcp-cis-benchmark:latest
 #   entrypoint: '/bin/sh'
@@ -8,18 +23,6 @@ steps:
 #       cinc-auditor exec /share/. -t gcp:// \
 #       --input gcp_project_id=${PROJECT_ID} \
 #       --reporter cli json:/workspace/report.json | tee output.json
-
-- id: 'run-inspec-cis'
-  name: gcr.io/${PROJECT_ID}/inspec-gcp-cis-benchmark:latest
-  # entrypoint: 'cinc-auditor'
-  # args: ['exec', '/share/.', '-t=gcp://', '--input', 'gcp_project_id=${PROJECT_ID}', '--reporter=cli', 'json:/workspace/report.json']
-  args:
-    - exec
-    - /share/.
-    - -t=gcp://
-    - --input=gcp_project_id=${PROJECT_ID}
-    - --reporter=cli 
-    - json:/workspace/report.json
 
 - id: 'Store json Report'
   waitFor: ['run-inspec-cis']
