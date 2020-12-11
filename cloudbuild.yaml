@@ -11,7 +11,7 @@ steps:
     - --reporter=cli 
     - json:/workspace/inspec_report.json
 
-- id: 'Store json Report'
+- id: 'Store Report'
   waitFor: ['Run InSpec']
   name: gcr.io/cloud-builders/gsutil
   args:
